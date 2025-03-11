@@ -150,8 +150,12 @@ pip install tensorflow
 ## 👨‍💻 **Author**
 
 **Harsh Agarwal**  
-📧 Email: agarwalh2904@gmail.com.com  
+📧 Email: agarwalh2904@gmail.com
 🔗 GitHub: [https://github.com/harry101969](https://github.com/harry101969)
+**Soham Patil**  
+🔗 GitHub: [https://github.com/Sohampatil20](https://github.com/Sohampatil20)
+**Siddhi Jagtap**
+🔗 GitHub: [https://github.com/Siddhijagtap12](https://github.com/Siddhijagtap12)
 
 ---
 
