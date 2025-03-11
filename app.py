@@ -253,7 +253,7 @@ def main():
 
     stock = st.text_input("Enter Stock Ticker:", "POWERGRID.NS")
     start = dt.datetime(2000, 1, 1)
-    end = dt.datetime(2025, 2, 27)  # Updated end date to Feb 27, 2025
+    end = dt.datetime(2025, 3, 10)  # Updated end date to Feb 27, 2025
 
     if st.button("Predict"):
         try:
