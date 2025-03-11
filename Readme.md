@@ -1,5 +1,3 @@
-### Complete `README.md` File with `requirements.txt` and Instructions
-
 ---
 
 # 📈 Stock Price Prediction App
