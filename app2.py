@@ -251,7 +251,7 @@ st.title("Stock Price Prediction App")
 
 # User input for stock symbol
 stock = st.text_input("Enter Stock Symbol (e.g., POWERGRID.NS)", "POWERGRID.NS")
-
+# 
 # Define start and end dates
 start = dt.datetime(2000, 1, 1)
 end = dt.datetime.now()
