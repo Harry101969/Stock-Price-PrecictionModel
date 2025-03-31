@@ -117,9 +117,9 @@ for _ in range(1825):  # 5 years * 365 days
     
     # ✅ Limit the difference between consecutive prices to ±20
     if len(future_predictions) > 0:
-        next_prediction = np.clip(next_prediction, future_predictions[-1] - 20, future_predictions[-1] + 20)
+        next_prediction = np.clip(next_prediction, future_predictions[-1] - 5, future_predictions[-1] + 5)
     else:
-        next_prediction = np.clip(next_prediction, previous_price - 20, previous_price + 20)
+        next_prediction = np.clip(next_prediction, previous_price - 5, previous_price + 5)
     
     future_predictions.append(next_prediction)
     
@@ -133,13 +133,30 @@ future_dates = pd.date_range(start=end + dt.timedelta(days=1), periods=1825)
 
 # ✅ Table only for 5–6 months (~180 days)
 target_df = pd.DataFrame({
-    'Date': future_dates[:180].strftime('%Y-%m-%d'),
-    'Predicted Target Price': future_predictions[:180]
+    'Date': future_dates[:5].strftime('%Y-%m-%d'),
+    'Predicted Target Price': future_predictions[:5]
 })
 
 # Display table for next 5–6 months only
-st.subheader("Predicted Target for Next 5–6 Months")
+st.subheader("Predicted Target for Next 5 Days")
 st.write(target_df)
+
+# ✅ Single-Day Gains/Losses Section
+st.subheader("📈 Single-Day Gain/Loss Calculator")
+current_price = df['Close'].iloc[-1]
+st.write(f"Current Stock Price: **{current_price:.2f}**")
+
+shares_bought = st.number_input("Enter the number of shares you want to buy:", min_value=1, step=1, value=10)
+next_day_price = future_predictions[0]
+
+profit_loss = (next_day_price - current_price) * shares_bought
+
+if profit_loss > 0:
+    st.success(f"🎉 Expected **Profit** for next day: **₹{profit_loss:.2f}**")
+elif profit_loss < 0:
+    st.error(f"⚠️ Expected **Loss** for next day: **₹{profit_loss:.2f}**")
+else:
+    st.info("No gain or loss expected for the next day.")
 
 # ✅ Plot future trend for next 5–6 years
 # st.subheader("Future Trend for Next 5–6 Years")

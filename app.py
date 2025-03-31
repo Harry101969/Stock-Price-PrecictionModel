@@ -1,351 +1,149 @@
-# # import numpy as np
-# # import pandas as pd
-# # import matplotlib.pyplot as plt
-# # # from tensorflow.keras.models import load_model
-# # from keras.models import load_model  # type: ignore
- 
-# # import streamlit as st
-# # import datetime as dt
-# # import yfinance as yf
-# # from sklearn.preprocessing import MinMaxScaler
-
-# # # Ensure TensorFlow is installed
-# # try:
-# #     import tensorflow as tf
-# # except ImportError:
-# #     st.error("TensorFlow is not installed. Please install it using: pip install tensorflow")
-
-# # # Load the model
-# # try:
-# #     model = load_model('stock_detection_model.h5')
-# # except Exception as e:
-# #     st.error(f"Error loading model: {e}")
-
-# # # Streamlit UI
-# # def main():
-# #     st.title("📈 Stock Price Prediction App")
-    
-# #     stock = st.text_input("Enter Stock Ticker:", "POWERGRID.NS")
-# #     start = dt.datetime(2000, 1, 1)
-# #     end = dt.datetime(2024, 10, 1)
-    
-# #     if st.button("Predict"):  
-# #         try:
-# #             df = yf.download(stock, start=start, end=end)
-# #             if df.empty:
-# #                 st.error("Invalid stock ticker or no data available.")
-# #                 return
-            
-# #             st.subheader("Stock Data Preview")
-# #             st.write(df.tail())
-            
-# #             # Exponential Moving Averages
-# #             ema20 = df.Close.ewm(span=20, adjust=False).mean()
-# #             ema50 = df.Close.ewm(span=50, adjust=False).mean()
-# #             ema100 = df.Close.ewm(span=100, adjust=False).mean()
-# #             ema200 = df.Close.ewm(span=200, adjust=False).mean()
-            
-# #             # Data processing
-# #             data_training = pd.DataFrame(df['Close'][0:int(len(df)*0.70)])
-# #             data_testing = pd.DataFrame(df['Close'][int(len(df)*0.70): int(len(df))])
-# #             scaler = MinMaxScaler(feature_range=(0, 1))
-# #             data_training_array = scaler.fit_transform(data_training)
-            
-# #             past_100_days = data_training.tail(100)
-# #             final_df = pd.concat([past_100_days, data_testing], ignore_index=True)
-# #             input_data = scaler.fit_transform(final_df)
-            
-# #             x_test, y_test = [], []
-# #             for i in range(100, input_data.shape[0]):
-# #                 x_test.append(input_data[i - 100:i])
-# #                 y_test.append(input_data[i, 0])
-# #             x_test, y_test = np.array(x_test), np.array(y_test)
-            
-# #             # Predict
-# #             y_predicted = model.predict(x_test)
-            
-# #             # Inverse scaling
-# #             scaler = scaler.scale_
-# #             scale_factor = 1 / scaler[0]
-# #             y_predicted = y_predicted * scale_factor
-# #             y_test = y_test * scale_factor
-            
-# #             # Plot EMA Chart
-# #             st.subheader("Closing Price with EMA (20 & 50 Days)")
-# #             fig1, ax1 = plt.subplots(figsize=(12, 6))
-# #             ax1.plot(df.Close, 'y', label='Closing Price')
-# #             ax1.plot(ema20, 'g', label='EMA 20')
-# #             ax1.plot(ema50, 'r', label='EMA 50')
-# #             ax1.set_xlabel("Time")
-# #             ax1.set_ylabel("Price")
-# #             ax1.legend()
-# #             st.pyplot(fig1)
-            
-# #             # Plot Prediction vs Original
-# #             st.subheader("Prediction vs Original Trend")
-# #             fig2, ax2 = plt.subplots(figsize=(12, 6))
-# #             ax2.plot(y_test, 'g', label="Original Price")
-# #             ax2.plot(y_predicted, 'r', label="Predicted Price")
-# #             ax2.set_xlabel("Time")
-# #             ax2.set_ylabel("Price")
-# #             ax2.legend()
-# #             st.pyplot(fig2)
-            
-# #             # Download CSV
-# #             csv_file_path = f"{stock}_dataset.csv"
-# #             df.to_csv(csv_file_path)
-# #             with open(csv_file_path, "rb") as f:
-# #                 st.download_button("Download CSV", f, file_name=csv_file_path)
-                
-# #         except Exception as e:
-# #             st.error(f"An error occurred: {e}")
-        
-# # if __name__ == "__main__":
-# #     main()
-
-# import numpy as np
-# import pandas as pd
-# import plotly.graph_objects as go
-# import pickle
-# import streamlit as st
-# import datetime as dt
-# import yfinance as yf
-# from sklearn.preprocessing import MinMaxScaler
-
-# # Load the model from .pkl file
-# try:
-#     with open("stock_detection_model.pkl", "rb") as f:  # Updated pkl filename
-#         model = pickle.load(f)
-# except Exception as e:
-#     st.error(f"Error loading model: {e}")
-
-# # Streamlit UI
-# def main():
-#     st.title("📈 Stock Price Prediction App")
-
-#     stock = st.text_input("Enter Stock Ticker:", "POWERGRID.NS")
-#     start = dt.datetime(2000, 1, 1)
-#     end = dt.datetime(2025, 2, 27)  # Updated end date to Feb 27, 2025
-
-#     if st.button("Predict"):
-#         try:
-#             df = yf.download(stock, start=start, end=end)
-#             if df.empty:
-#                 st.error("Invalid stock ticker or no data available.")
-#                 return
-
-#             st.subheader("Stock Data Preview")
-#             st.write(df.tail())
-
-#             # Exponential Moving Averages
-#             ema20 = df.Close.ewm(span=20, adjust=False).mean()
-#             ema50 = df.Close.ewm(span=50, adjust=False).mean()
-
-#             # Data processing
-#             data_training = df['Close'][0:int(len(df) * 0.70)]
-#             data_testing = df['Close'][int(len(df) * 0.70):]
-#             scaler = MinMaxScaler(feature_range=(0, 1))
-#             data_training_array = scaler.fit_transform(data_training.values.reshape(-1, 1))
-
-#             past_100_days = data_training[-100:]
-#             final_df = pd.concat([past_100_days, data_testing], ignore_index=True)
-#             input_data = scaler.fit_transform(final_df.values.reshape(-1, 1))
-
-#             x_test, y_test = [], []
-#             for i in range(100, input_data.shape[0]):
-#                 x_test.append(input_data[i - 100:i])
-#                 y_test.append(input_data[i, 0])
-#             x_test, y_test = np.array(x_test), np.array(y_test)
-
-#             # Predict using the loaded model
-#             y_predicted = model.predict(x_test)
-
-#             # Inverse scaling
-#             scale_factor = 1 / scaler.scale_[0]
-#             y_predicted = y_predicted * scale_factor
-#             y_test = y_test * scale_factor
-
-#             # Extract corresponding dates for the test dataset
-#             test_dates = df.index[-len(y_test):]
-
-#             # 📌 Interactive Candlestick Chart
-#             st.subheader("📊 Interactive Candlestick Chart with EMA")
-#             fig1 = go.Figure()
-
-#             # Candlestick data
-#             fig1.add_trace(go.Candlestick(
-#                 x=df.index,
-#                 open=df['Open'],
-#                 high=df['High'],
-#                 low=df['Low'],
-#                 close=df['Close'],
-#                 name="Candlestick"
-#             ))
-
-#             # Exponential Moving Averages
-#             fig1.add_trace(go.Scatter(x=df.index, y=ema20, mode="lines", name="EMA 20", line=dict(color="green")))
-#             fig1.add_trace(go.Scatter(x=df.index, y=ema50, mode="lines", name="EMA 50", line=dict(color="red")))
-
-#             fig1.update_layout(
-#                 xaxis_rangeslider_visible=False,
-#                 title="Stock Price Chart with Moving Averages",
-#                 xaxis_title="Date",
-#                 yaxis_title="Price",
-#                 template="plotly_dark"
-#             )
-#             st.plotly_chart(fig1)
-# #             # Creating the candlestick 
-# # import plotly.graph_objects as go
-# # fig = go.Figure(data=[go.Candlestick(x=data1['Date'],
-# #                                      open=data1['Open'],
-# #                                      high=data1['High'],
-# #                                      low=data1['Low'],
-# #                                      close=data1['Close'])])
-# # fig.update_layout(xaxis_rangeslider_visible=False)
-# # fig.show()
-
-#             # 📌 Interactive Prediction vs Original Trend
-#             st.subheader("📈 Prediction vs Original Trend")
-#             fig2 = go.Figure()
-
-#             fig2.add_trace(go.Scatter(x=test_dates, y=y_test, mode="lines", name="Original Price", line=dict(color="green")))
-#             fig2.add_trace(go.Scatter(x=test_dates, y=y_predicted.flatten(), mode="lines", name="Predicted Price", line=dict(color="red")))
-
-#             fig2.update_layout(
-#                 title="Original vs Predicted Stock Price",
-#                 xaxis_title="Date",
-#                 yaxis_title="Price",
-#                 template="plotly_dark"
-#             )
-#             st.plotly_chart(fig2)
-
-#             # Download CSV
-#             csv_file_path = f"{stock}_dataset.csv"
-#             df.to_csv(csv_file_path)
-#             with open(csv_file_path, "rb") as f:
-#                 st.download_button("Download CSV", f, file_name=csv_file_path)
-
-#         except Exception as e:
-#             st.error(f"An error occurred: {e}")
-
-# if __name__ == "__main__":
-#     main()
-
 import numpy as np
 import pandas as pd
-import plotly.graph_objects as go
-import pickle
 import streamlit as st
 import datetime as dt
 import yfinance as yf
+import plotly.graph_objects as go
 from sklearn.preprocessing import MinMaxScaler
+from tensorflow.keras.models import load_model
 
-# Load the model from .pkl file
+# Load the trained model
+model = load_model('stockpricemodel.keras')
+
+st.title("Stock Price Prediction App")
+
+# User input for stock symbol
+stock = st.text_input("Enter Stock Symbol (e.g., POWERGRID.NS)", "POWERGRID.NS")
+
+# Define start and end dates
+start = dt.datetime(2000, 1, 1)
+end = dt.datetime.now()
+
+# ✅ Error Handling for Invalid Symbols
 try:
-    with open("stock_detection_model.pkl", "rb") as f:  # Updated pkl filename
-        model = pickle.load(f)
+    df = yf.download(stock, start=start, end=end)
+    if df.empty:
+        st.error(f"❌ No data found for symbol '{stock}'. Please check the symbol and try again.")
+        st.stop()
 except Exception as e:
-    st.error(f"Error loading model: {e}")
+    st.error(f"❌ Error retrieving data for symbol '{stock}': {e}")
+    st.stop()
 
-# Streamlit UI
-def main():
-    st.title("📈 Stock Price Prediction App")
+# Display dataset summary
+st.subheader("Stock Data Summary")
+st.write(df.describe())
 
-    stock = st.text_input("Enter Stock Ticker:", "POWERGRID.NS")
-    start = dt.datetime(2000, 1, 1)
-    end = dt.datetime(2025, 3, 10)  # Updated end date to Feb 27, 2025
+# Calculate Exponential Moving Averages (EMA)
+df['EMA_20'] = df['Close'].ewm(span=20, adjust=False).mean()
+df['EMA_50'] = df['Close'].ewm(span=50, adjust=False).mean()
+df['EMA_100'] = df['Close'].ewm(span=100, adjust=False).mean()
+df['EMA_200'] = df['Close'].ewm(span=200, adjust=False).mean()
 
-    if st.button("Predict"):
-        try:
-            df = yf.download(stock, start=start, end=end)
-            if df.empty:
-                st.error("Invalid stock ticker or no data available.")
-                return
+# Candlestick Chart with 20 & 50 EMA
+st.subheader("Closing Price with 20 & 50 Days EMA")
+fig1 = go.Figure()
+fig1.add_trace(go.Candlestick(x=df.index, open=df['Open'], high=df['High'], low=df['Low'], close=df['Close'], name='Candlestick'))
+fig1.add_trace(go.Scatter(x=df.index, y=df['EMA_20'], mode='lines', name='EMA 20', line=dict(color='green')))
+fig1.add_trace(go.Scatter(x=df.index, y=df['EMA_50'], mode='lines', name='EMA 50', line=dict(color='red')))
+fig1.update_layout(xaxis_rangeslider_visible=False)
+st.plotly_chart(fig1)
 
-            st.subheader("Stock Data Preview")
-            st.write(df.tail())
+# Candlestick Chart with 100 & 200 EMA
+st.subheader("Closing Price with 100 & 200 Days EMA")
+fig2 = go.Figure()
+fig2.add_trace(go.Candlestick(x=df.index, open=df['Open'], high=df['High'], low=df['Low'], close=df['Close'], name='Candlestick'))
+fig2.add_trace(go.Scatter(x=df.index, y=df['EMA_100'], mode='lines', name='EMA 100', line=dict(color='blue')))
+fig2.add_trace(go.Scatter(x=df.index, y=df['EMA_200'], mode='lines', name='EMA 200', line=dict(color='purple')))
+fig2.update_layout(xaxis_rangeslider_visible=False)
+st.plotly_chart(fig2)
 
-            # Exponential Moving Averages (Corrected)
-            df['EMA_20'] = df['Close'].ewm(span=20, adjust=False).mean()
-            df['EMA_50'] = df['Close'].ewm(span=50, adjust=False).mean()
+# Data Preparation
+data_training = df[['Close']][:int(len(df) * 0.70)]
+data_testing = df[['Close']][int(len(df) * 0.70):]
+scaler = MinMaxScaler(feature_range=(0, 1))
+data_training_array = scaler.fit_transform(data_training)
 
-            # Data processing
-            data_training = df['Close'][0:int(len(df) * 0.70)]
-            data_testing = df['Close'][int(len(df) * 0.70):]
-            scaler = MinMaxScaler(feature_range=(0, 1))
-            data_training_array = scaler.fit_transform(data_training.values.reshape(-1, 1))
+# Prepare test data
+past_100_days = data_training.tail(100)
+final_df = pd.concat([past_100_days, data_testing], ignore_index=True)
+input_data = scaler.transform(final_df)
 
-            past_100_days = data_training[-100:]
-            final_df = pd.concat([past_100_days, data_testing], ignore_index=True)
-            input_data = scaler.fit_transform(final_df.values.reshape(-1, 1))
+x_test, y_test = [], []
+for i in range(100, input_data.shape[0]):
+    x_test.append(input_data[i - 100:i])
+    y_test.append(input_data[i, 0])
+x_test, y_test = np.array(x_test), np.array(y_test)
 
-            x_test, y_test = [], []
-            for i in range(100, input_data.shape[0]):
-                x_test.append(input_data[i - 100:i])
-                y_test.append(input_data[i, 0])
-            x_test, y_test = np.array(x_test), np.array(y_test)
+# Make predictions
+y_predicted = model.predict(x_test)
 
-            # Predict using the loaded model
-            y_predicted = model.predict(x_test)
+# Reverse scaling
+scale_factor = 1 / scaler.scale_[0]
+y_predicted = y_predicted * scale_factor
+y_test = y_test * scale_factor
 
-            # Inverse scaling
-            scale_factor = 1 / scaler.scale_[0]
-            y_predicted = y_predicted * scale_factor
-            y_test = y_test * scale_factor
+# Extract corresponding dates for the test dataset
+test_dates = df.index[-len(y_test):]
 
-            # Extract corresponding dates for the test dataset
-            test_dates = df.index[-len(y_test):]
+# Plot Predictions
+st.subheader("Prediction vs Original Trend")
+fig3 = go.Figure()
+fig3.add_trace(go.Scatter(x=test_dates, y=y_test, mode='lines', name="Actual Price", line=dict(color="blue")))
+fig3.add_trace(go.Scatter(x=test_dates, y=y_predicted.flatten(), mode='lines', name="Predicted Price", line=dict(color="orange")))
+fig3.update_layout(title="Stock Price Prediction", xaxis_title="Date", yaxis_title="Price", xaxis_rangeslider_visible=False)
+st.plotly_chart(fig3)
 
-            # 📌 **Fixed Interactive EMA Chart**
-            st.subheader("📊 Interactive Stock Chart with EMA")
-            fig1 = go.Figure()
+# ✅ Predicted target for next 5 days
+target_df = pd.DataFrame({
+    'Date': test_dates[-5:].strftime('%Y-%m-%d'),
+    'Predicted Target Price': y_predicted[-5:].flatten()
+})
+st.subheader("Predicted Target for Next 5 Days")
+st.write(target_df)
 
-            # Candlestick Chart
-            fig1.add_trace(go.Candlestick(
-                x=df.index, open=df['Open'], high=df['High'],
-                low=df['Low'], close=df['Close'], name='Candlestick'
-            ))
+# Get last closing price correctly as float
+current_price = df['Close'].iloc[-1]
 
-            # EMA Lines
-            fig1.add_trace(go.Scatter(
-                x=df.index, y=df['EMA_20'], mode='lines', name="EMA 20", line=dict(color="green")
-            ))
-            fig1.add_trace(go.Scatter(
-                x=df.index, y=df['EMA_50'], mode='lines', name="EMA 50", line=dict(color="red")
-            ))
+import pandas as pd
 
-            # Layout Settings
-            fig1.update_layout(title="Stock Prices with EMA",
-                               xaxis_title="Date",
-                               yaxis_title="Price",
-                               xaxis_rangeslider_visible=False)
-            st.plotly_chart(fig1)
+# Ensure current_price is a float
+current_price = float(current_price) if isinstance(current_price, (pd.Series, pd.DataFrame)) else current_price
 
-            # 📊 **Prediction vs Original Price Chart**
-            st.subheader("📈 Prediction vs Original Price")
-            fig2 = go.Figure()
+ticker_info = yf.Ticker(stock).info
+currency = ticker_info.get("currency", "INR") 
+currency_symbols = {
+    "USD": "$",
+    "INR": "₹",
+    "EUR": "€",
+    "GBP": "£",
+    "JPY": "¥",
+    "AUD": "A$",
+    "CAD": "C$",
+    "CHF": "CHF",
+    "SGD": "S$",
+    "HKD": "HK$",
+}
 
-            fig2.add_trace(go.Scatter(
-                x=test_dates, y=y_test, mode='lines', name="Actual Price", line=dict(color="blue")
-            ))
-            fig2.add_trace(go.Scatter(
-                x=test_dates, y=y_predicted.flatten(), mode='lines', name="Predicted Price", line=dict(color="orange")
-            ))
+# Get the appropriate currency symbol
+currency_symbol = currency_symbols.get(currency, currency)
+st.subheader("📈 Single-Day Gain/Loss Calculator")
 
-            fig2.update_layout(title="Stock Price Prediction",
-                               xaxis_title="Date",
-                               yaxis_title="Price",
-                               xaxis_rangeslider_visible=False)
-            st.plotly_chart(fig2)
+formatted_price = f"Current Stock Price: **{currency_symbol}{current_price}**"
+st.write(formatted_price)
 
-            # 📥 **Download CSV**
-            csv_file_path = f"{stock}_dataset.csv"
-            df.to_csv(csv_file_path)
-            with open(csv_file_path, "rb") as f:
-                st.download_button("Download CSV", f, file_name=csv_file_path)
+shares_bought = st.number_input("Enter the number of shares you want to buy:", min_value=1, step=1, value=10)
 
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
+next_day_price = float(y_predicted[-1][0])  # Ensure it's also a float
+profit_loss = (next_day_price - current_price) * shares_bought
 
-if __name__ == "__main__":
-    main()
+if profit_loss > 0:
+    st.success(f"🎉 Expected **Profit** for next day: **{currency_symbol}{profit_loss:.2f}**")
+elif profit_loss < 0:
+    st.error(f"⚠️ Expected **Loss** for next day: **{currency_symbol}{profit_loss:.2f}**")
+else:
+    st.info("No gain or loss expected for the next day.")
+
+# ✅ Download dataset
+csv_file_path = f"{stock}_dataset.csv"
+df.to_csv(csv_file_path)
+st.download_button(label="Download Dataset as CSV", data=open(csv_file_path, 'rb'), file_name=csv_file_path, mime='text/csv')
