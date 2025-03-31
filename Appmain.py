@@ -131,28 +131,16 @@ for _ in range(1825):  # 5 years * 365 days
 future_predictions = np.array(future_predictions)
 future_dates = pd.date_range(start=end + dt.timedelta(days=1), periods=1825)
 
-# ✅ Table only for 5–6 months (~180 days)
+# ✅ Table only for 5 days
 target_df = pd.DataFrame({
-    'Date': future_dates[:180].strftime('%Y-%m-%d'),
+    'Date': future_dates[:5].strftime('%Y-%m-%d'),
     'Predicted Target Price': future_predictions[:180]
 })
 
 # Display table for next 5–6 months only
-st.subheader("Predicted Target for Next 5–6 Months")
+st.subheader("Predicted Target for Next 5 Days")
 st.write(target_df)
 
-# ✅ Plot future trend for next 5–6 years
-# st.subheader("Future Trend for Next 5–6 Years")
-# fig4 = go.Figure()
-# fig4.add_trace(go.Scatter(
-#     x=future_dates, y=future_predictions, mode='lines', name="Predicted Price", line=dict(color="orange")
-# ))
-
-# fig4.update_layout(title="Future Stock Price Prediction (Next 5–6 Years)",
-#                    xaxis_title="Date",
-#                    yaxis_title="Price",
-#                    xaxis_rangeslider_visible=False)
-# st.plotly_chart(fig4)
 
 # ✅ Download dataset
 csv_file_path = f"{stock}_dataset.csv"
