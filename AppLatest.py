@@ -13,7 +13,7 @@ model = load_model('stockpricemodel.keras')
 st.title("Stock Price Prediction App")
 
 # User input for stock symbol
-stock = st.text_input("Enter Stock Symbol (e.g., POWERGRID.NS)", "POWERGRID.NS")
+stock = st.text_input("Enter Stock Symbol (e.g., NVDA)", "NVDA")
 
 # Define start and end dates
 start = dt.datetime(2000, 1, 1)
@@ -101,70 +101,28 @@ fig3.update_layout(title="Stock Price Prediction",
                    xaxis_rangeslider_visible=False)
 st.plotly_chart(fig3)
 
-# # 🚀 Predict the next 5–6 years recursively (~180 days)
-# last_100_days = input_data[-100:]
-# future_predictions = []
-# current_input = last_100_days.reshape(1, 100, 1)
-
-# # Predict next 30 days
-# previous_price = y_test[-1]
-# for _ in range(30):  # 180 days
-#     next_prediction = model.predict(current_input)[0][0] * scale_factor
-    
-#     # ✅ Add realistic fluctuation (including falls)
-#     noise = np.random.uniform(-5, 5)  # Simulate realistic fluctuation
-#     next_prediction += noise
-    
-#     if len(future_predictions) > 0:
-#         next_prediction = np.clip(next_prediction, future_predictions[-1] - 2.4930, future_predictions[-1] + 3.0489)
-#     else:
-#         next_prediction = np.clip(next_prediction, previous_price - 2.5061, previous_price + 2.6137)
-    
-#     future_predictions.append(next_prediction)
-    
-#     # Update input for next prediction
-#     next_scaled = next_prediction / scale_factor
-#     current_input = np.append(current_input[:, 1:, :], [[[next_scaled]]], axis=1)
-
-# # Reverse scaling for target values
-# future_predictions = np.array(future_predictions)
-# future_dates = pd.date_range(start=end + dt.timedelta(days=1), periods=30)
-
-# # ✅ Table only for 5–6 months (~180 days)
-# target_df = pd.DataFrame({
-#     'Date': future_dates[:10].strftime('%Y-%m-%d'),
-#     'Predicted Target Price': future_predictions[:10]
-# })
-
-# # Display table for next 5–6 months only
-# st.subheader("Predicted Target for Next 5 Days")
-# st.write(target_df)
-# 🚀 Predict the next 5–10 days recursively using LSTM-based predictions
+# 🚀 Predict the next 5–6 years recursively (~1825 days)
 last_100_days = input_data[-100:]
 future_predictions = []
 current_input = last_100_days.reshape(1, 100, 1)
 
-# Predict next 10 days (short-term trend)
-previous_price = y_test[-1]  # Last known real price
-for _ in range(10):  
-    next_prediction = model.predict(current_input)[0][0] * scale_factor  # LSTM forecast
-
-    # ✅ Add market-like noise to allow fluctuations (both up & down)
-    noise = np.random.uniform(-0.02, 0.02) * next_prediction  # Random ±2% variation
-    next_prediction += noise  
-
-    # ✅ Ensure realistic variation (price can decrease)
+# Predict next 180 days
+previous_price = y_test[-1]
+for _ in range(10):  #  180 days
+    next_prediction = model.predict(current_input)[0][0] * scale_factor
+    
+    # ✅ Add realistic fluctuation (including falls)
+    noise = np.random.uniform(-5, 5)  # Simulate realistic fluctuation
+    next_prediction += noise
+    
+    # ✅ Limit the difference between consecutive prices to ±20
     if len(future_predictions) > 0:
-        min_allowed = future_predictions[-1] - np.random.uniform(0.5, 2.5)  # Allow small drops
-        max_allowed = future_predictions[-1] + np.random.uniform(0.5, 3.0)  # Allow small rises
-        next_prediction = np.clip(next_prediction, min_allowed, max_allowed)
+        next_prediction = np.clip(next_prediction, future_predictions[-1] - 5.043, future_predictions[-1] + 5.597)
     else:
-        min_allowed = previous_price - np.random.uniform(0.5104, 2.5006)  
-        max_allowed = previous_price + np.random.uniform(0.5349, 3.0980)  
-        next_prediction = np.clip(next_prediction, min_allowed, max_allowed)
-
+        next_prediction = np.clip(next_prediction, previous_price - 5.673, previous_price + 5.068)
+    
     future_predictions.append(next_prediction)
-
+    
     # Update input for next prediction
     next_scaled = next_prediction / scale_factor
     current_input = np.append(current_input[:, 1:, :], [[[next_scaled]]], axis=1)
@@ -173,13 +131,14 @@ for _ in range(10):
 future_predictions = np.array(future_predictions)
 future_dates = pd.date_range(start=end + dt.timedelta(days=1), periods=10)
 
-# ✅ Display table with more natural price changes
+# ✅ Table only for 5days (~5 days)
 target_df = pd.DataFrame({
-    'Date': future_dates.strftime('%Y-%m-%d'),
-    'Predicted Target Price': future_predictions
+    'Date': future_dates[:5].strftime('%Y-%m-%d'),
+    'Predicted Target Price': future_predictions[:5]
 })
 
-st.subheader("Predicted Target for Next 5-10 Days")
+# Display table for next 5–6 months only
+st.subheader("Predicted Target for Next 5 Days")
 st.write(target_df)
 
 # Get last closing price correctly as float
@@ -224,19 +183,6 @@ elif profit_loss < 0:
 else:
     st.info("No gain or loss expected for the next day.")
 
-
-# ✅ Plot future trend for next 5–6 years
-# st.subheader("Future Trend for Next 5–6 Years")
-# fig4 = go.Figure()
-# fig4.add_trace(go.Scatter(
-#     x=future_dates, y=future_predictions, mode='lines', name="Predicted Price", line=dict(color="orange")
-# ))
-
-# fig4.update_layout(title="Future Stock Price Prediction (Next 5–6 Years)",
-#                    xaxis_title="Date",
-#                    yaxis_title="Price",
-#                    xaxis_rangeslider_visible=False)
-# st.plotly_chart(fig4)
 
 # ✅ Download dataset
 csv_file_path = f"{stock}_dataset.csv"

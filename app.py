@@ -75,7 +75,7 @@ for i in range(100, input_data.shape[0]):
 x_test, y_test = np.array(x_test), np.array(y_test)
 
 # Make predictions
-y_predicted = model.predict(x_test)
+y_predicted = model.predict(x_test)-1
 
 # Reverse scaling
 scale_factor = 1 / scaler.scale_[0]
