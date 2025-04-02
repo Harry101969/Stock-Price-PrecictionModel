@@ -20,10 +20,9 @@ This project allows users to:
 
 ```
 ├── app.py               # Main Streamlit app file
-├── app2.py              # Additional app version
-├── app3.py              # Additional app version
-├── app4.py              # Additional app version
-├── app5.py              # Additional app version
+├── AppFinal.py              # Additional app version
+├── UsingPklApp.py              # Additional app version using pkl
+├── stockmodel.pkl             # pkl for different setup
 ├── stockpricemodel.keras # Trained LSTM model
 ├── stock_dl_model.h5     # Additional model file
 ├── stock_detection_model.pkl # Pickle file for model backup
@@ -80,7 +79,7 @@ pip install -r requirements.txt
 ### **4. Run the Streamlit app:**
 
 ```bash
-streamlit run app.py
+streamlit run app.py 
 ```
 
 ### **5. Open the browser and visit:**
