@@ -9,8 +9,7 @@ This is a **Stock Price Prediction App** built with **Streamlit** that predicts 
 ## 🚀 **Overview**
 
 This project allows users to:  
-✅ Predict stock prices for the next **5–6 months** (displayed in a table).  
-✅ Forecast long-term stock trends for the next **5–6 years** (shown in a graph).  
+✅ Predict stock prices for the next **5–6 Days** To make single day gains (displayed in a table).  
 ✅ Show realistic market-like fluctuations (including falls).  
 ✅ Display Exponential Moving Averages (EMA) to visualize short-term trends.
 
