@@ -9,8 +9,7 @@ This is a **Stock Price Prediction App** built with **Streamlit** that predicts 
 ## 🚀 **Overview**
 
 This project allows users to:  
-✅ Predict stock prices for the next **5–6 months** (displayed in a table).  
-✅ Forecast long-term stock trends for the next **5–6 years** (shown in a graph).  
+✅ Predict stock prices for the next **5–6 Days** To make single day gains (displayed in a table).  
 ✅ Show realistic market-like fluctuations (including falls).  
 ✅ Display Exponential Moving Averages (EMA) to visualize short-term trends.
 
@@ -20,10 +19,9 @@ This project allows users to:
 
 ```
 ├── app.py               # Main Streamlit app file
-├── app2.py              # Additional app version
-├── app3.py              # Additional app version
-├── app4.py              # Additional app version
-├── app5.py              # Additional app version
+├── AppFinal.py              # Additional app version
+├── UsingPklApp.py              # Additional app version using pkl
+├── stockmodel.pkl             # pkl for different setup
 ├── stockpricemodel.keras # Trained LSTM model
 ├── stock_dl_model.h5     # Additional model file
 ├── stock_detection_model.pkl # Pickle file for model backup
@@ -80,7 +78,7 @@ pip install -r requirements.txt
 ### **4. Run the Streamlit app:**
 
 ```bash
-streamlit run app.py
+streamlit run app.py 
 ```
 
 ### **5. Open the browser and visit:**
