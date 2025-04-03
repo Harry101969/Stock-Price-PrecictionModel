@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import load_model
 import os
+
 # Load the trained model
 model = load_model('stockpricemodel.keras')
 
