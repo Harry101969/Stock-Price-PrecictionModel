@@ -175,7 +175,7 @@ target_df = pd.DataFrame({
 })
 
 # Display table
-st.subheader("Predicted Prices (Next 6 Days)")
+st.subheader(f"Predicted Prices For {stock}")
 st.write(target_df)
 
 # Get ticker information for currency
